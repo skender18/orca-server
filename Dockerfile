@@ -17,6 +17,7 @@
 FROM ubuntu:24.04
 
 ARG ORCA_VERSION=v1.4.212
+ARG ORCA_OPENCODE_VERSION=2.0.18
 ARG TARGETARCH
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -91,8 +92,7 @@ RUN set -eux; \
 # Agent CLIs. Antigravity is a single static binary installed lower down.
 RUN set -eux; \
     npm install -g --no-fund --no-audit \
-      opencode-ai \
-      opencode2 \
+      "@opencode/cli@${ORCA_OPENCODE_VERSION}" \
       @anthropic-ai/claude-code \
       @openai/codex; \
     npm cache clean --force

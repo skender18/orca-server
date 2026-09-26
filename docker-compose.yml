@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         ORCA_VERSION: ${ORCA_VERSION:-v1.4.212}
+        ORCA_OPENCODE_VERSION: ${ORCA_OPENCODE_VERSION:-2.0.18}
     image: orca-server:${ORCA_VERSION:-v1.4.212}
     # Real PID 1 so exited PTY children are reaped instead of accumulating.
     init: true
@@ -13,6 +14,7 @@ services:
     restart: unless-stopped
     environment:
       ORCA_VERSION: ${ORCA_VERSION:-v1.4.212}
+      ORCA_OPENCODE_VERSION: ${ORCA_OPENCODE_VERSION:-2.0.18}
       ORCA_SERVE_PORT: "6768"
       # Advertised only; must be reachable by the client. Dokploy terminates TLS.
       ORCA_PAIRING_ADDRESS: ${ORCA_PAIRING_ADDRESS:-wss://localhost:6768}
