@@ -41,6 +41,7 @@ RUN set -eux; \
       iproute2 \
       jq \
       procps \
+      ripgrep \
       unzip \
       util-linux \
       xauth \
@@ -74,6 +75,18 @@ RUN set -eux; \
     apt-get install -y --no-install-recommends nodejs; \
     rm -rf /var/lib/apt/lists/*; \
     node --version; npm --version
+
+# GitHub CLI (gh) from the official repo; Orca uses it for PR/issue integration.
+RUN set -eux; \
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+      -o /usr/share/keyrings/githubcli-archive-keyring.gpg; \
+    chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg; \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+      > /etc/apt/sources.list.d/github-cli.list; \
+    apt-get -o Acquire::Retries=5 update; \
+    apt-get -o Acquire::Retries=5 install -y --no-install-recommends gh; \
+    rm -rf /var/lib/apt/lists/*; \
+    gh --version
 
 # Agent CLIs. Antigravity is a single static binary installed lower down.
 RUN set -eux; \
