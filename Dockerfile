@@ -92,6 +92,7 @@ RUN set -eux; \
 RUN set -eux; \
     npm install -g --no-fund --no-audit \
       opencode-ai \
+      opencode2 \
       @anthropic-ai/claude-code \
       @openai/codex; \
     npm cache clean --force
