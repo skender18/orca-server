@@ -1,0 +1,39 @@
+services:
+  orca:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ORCA_VERSION: ${ORCA_VERSION:-v1.4.212}
+    image: orca-server:${ORCA_VERSION:-v1.4.212}
+    # Real PID 1 so exited PTY children are reaped instead of accumulating.
+    init: true
+    # Chromium/Electron crash with the default 64MB /dev/shm.
+    shm_size: "2gb"
+    restart: unless-stopped
+    environment:
+      ORCA_VERSION: ${ORCA_VERSION:-v1.4.212}
+      ORCA_SERVE_PORT: "6768"
+      # Advertised only; must be reachable by the client. Dokploy terminates TLS.
+      ORCA_PAIRING_ADDRESS: ${ORCA_PAIRING_ADDRESS:-wss://localhost:6768}
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      # Provider keys (set in Dokploy env, left blank here on purpose).
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GH_TOKEN: ${GH_TOKEN:-}
+    volumes:
+      # Orca state, pairing keys, and agent credentials (claude/codex/opencode/agy).
+      - orca-home:/home/orca
+      # Your cloned repositories and worktrees.
+      - orca-workspace:/workspace
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:6768/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 180s
+
+volumes:
+  orca-home:
+  orca-workspace:
