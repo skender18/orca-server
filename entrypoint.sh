@@ -6,7 +6,9 @@
 # fixtures (runuser --user orca --preserve-environment).
 set -euo pipefail
 
-export HOME="${HOME:-/home/orca}"
+# Force the volume-backed home. Inheriting root's HOME (/root) would put
+# pairing keys, agent credentials, and Orca state outside the mounted volume.
+export HOME="/home/orca"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_RUNTIME_DIR="$HOME/.runtime"
